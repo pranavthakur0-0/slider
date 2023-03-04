@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0px;
+      padding: 0px;
+    }
+    .main-container {
+      color: white;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      position: relative;
+    }
+    .wrapper{
+      height: 100%;
+      z-index: 4;
+      width: 100%;
+      overflow: hidden;
+    }
+    .outer {
+      height:100%;
+      width: 100%;
+      display: flex;
+    }
+    .slide {
+      font-size: 5rem;
+      height: 100%;
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .one {
+      background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+    }
+    .two {
+      background-image: linear-gradient(to right, #8e2de2, #4a00e0);
+    }
+    .three {
+      background-image: linear-gradient(to right, #fc5c7d, #6a82fb);
+    }
+    .four {
+      background-image: linear-gradient(to right, #00b4db, #0083b0);
+    }
+    .button-wrapper{
+      z-index: 55;
+      position: absolute;
+      top: 45%;
+      transform: translate(50% -50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      
+    }
+    .right{
+      position: relative;
+      right: 3rem;
+      font-size: 1rem;
+      padding: 1rem;
+      border-radius: 50%;
+      font-weight: 200;
+      display: flex;
+      justify-content: center;
+      border: none;
+      align-items: center;
+      cursor: pointer;
+    }
+    .left{
+      position: relative;
+      left: 3rem;
+      font-size: 1rem;
+      border-radius: 50%;
+      padding: 1rem;
+      font-weight: 200;
+      display: flex;
+      border: none;
+      justify-content: center;
+      cursor: pointer;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+      <div class="wrapper">
+      <div class="outer">
+        
+      <div class="slide one"> Slide 1</div>
+      <div class="slide two">Slide 2</div>
+      <div class="slide three">Slide 3</div>
+      <div class="slide four">Slide 4</div>
+    </div>
+  </div>
+  <div class="button-wrapper">
+    <button class="left" onclick="handle('left')"><i class="fas fa-arrow-left"></i></button>
+    <button class="right" onclick="handle('right')"><i class="fas fa-arrow-right"></i></button>
+  </div>
+ 
+  </div>
+  <script>
+    let index = 1;
+    const outer = document.querySelector('.outer');
+    const slides =  document.querySelectorAll('.slide');
+    const firstSlide = slides[0];
+    const endSlide = slides[slides.length-1];
+    let num = slides.length;
+    console.log(outer);
+    const cloneFirst = firstSlide.cloneNode(true);
+    const cloneend =  endSlide.cloneNode(true);
+    let lastSlide = slides[slides.length - 1]; 
+      outer.insertBefore(cloneend, slides[0]);
+      outer.appendChild(cloneFirst);
+
+      let isTransitioning = false;
+
+      function handle(direction) {
+        if (isTransitioning) {
+          return;
+        }
+        isTransitioning = true;
+        outer.style.transition = '0.5s';
+        direction !=='right' ? (index -=1) : (index +=1);
+        console.log(index);
+        moveslide();
+      }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      outer.style.transform = `translateX(-${index *100}%)`;
+    });
+
+
+    const moveslide = () => {
+      outer.style.transform = `translateX(-${index * 100}%)`;
+      if (index === 0) {
+        outer.addEventListener('transitionend', starttoend);
+        function starttoend() {
+          outer.style.transition = '0s'
+          index = slides.length;
+          outer.style.transform = `translateX(-${index *100}%)`;
+          outer.removeEventListener('transitionend',starttoend);
+          isTransitioning = false;
+        }
+        outer.style.transition = '0.5s';
+      } else if (index === slides.length+1) {
+        outer.addEventListener('transitionend', myFunction);
+        function myFunction() {
+          outer.style.transition = '0s'
+          index = 1;
+          outer.style.transform = `translateX(-${index *100}%)`;
+          outer.removeEventListener('transitionend',myFunction);
+          isTransitioning = false;
+        }
+        outer.style.transition = '0.5s';
+      } else {
+        outer.addEventListener('transitionend', end);
+        function end() {
+          outer.removeEventListener('transitionend', end);
+          isTransitioning = false;
+        }
+      }
+    };
+    
+  </script>
+</body>
+</html>
